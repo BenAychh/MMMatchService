@@ -51,6 +51,7 @@ public class MongoTest {
     mc.close();
   }
   
+  @Test
   public void testGetPotentialMatches() throws Exception {
     Webb webb = Webb.create();
     JSONObject payload = new JSONObject();
