@@ -86,8 +86,6 @@ public class PostgresTest {
   @Test
   public void getMatchesTest() throws Exception {
     Webb webb = Webb.create();
-    JSONObject payload = new JSONObject();
-    payload.put("email", "inserttest@gmail.com");
     Request request = webb
             .get("http://localhost:8002/matches?email=testy@test.com");
     Response<JSONObject> response = request
@@ -103,11 +101,9 @@ public class PostgresTest {
     JSONAssert.assertEquals(expected, result, true);
     Assert.assertEquals(200, response.getStatusCode());
   }
-    @Test
+  @Test
   public void getInterestedInTest() throws Exception {
     Webb webb = Webb.create();
-    JSONObject payload = new JSONObject();
-    payload.put("email", "inserttest@gmail.com");
     Request request = webb
             .get("http://localhost:8002/interested?email=testy@test.com");
     Response<JSONObject> response = request
@@ -123,5 +119,93 @@ public class PostgresTest {
     expected.put("interests", matches);
     JSONAssert.assertEquals(expected, result, true);
     Assert.assertEquals(200, response.getStatusCode());
+  }
+  @Test
+  public void putInterestTestValidEmail() throws Exception {
+    Webb webb = Webb.create();
+    JSONObject payload = new JSONObject();
+    payload.put("email", "testy@test.com");
+    payload.put("interestedIn", "user4@email.com");
+    Request request = webb
+            .put("http://localhost:8002/addinterest")
+            .body(payload);
+    Response<JSONObject> response = request
+            .asJsonObject();
+    JSONObject result = response.getBody();
+    JSONObject expected = new JSONObject();
+    expected.put("message", "Added interest in user4@email.com");
+    expected.put("status", 200);
+    JSONAssert.assertEquals(expected, result, true);
+    Assert.assertEquals(200, response.getStatusCode());
+    JSONObject expected2 = webb
+        .get("http://localhost:8002/interested?email=testy@test.com")
+        .asJsonObject().getBody();
+    JSONArray matches = new JSONArray();
+    matches.put("user1@email.com");
+    matches.put("user2@email.com");
+    matches.put("user3@email.com");
+    matches.put("user4@email.com");
+    JSONAssert.assertEquals(expected2.getJSONArray("interests"), matches, true);
+  }
+  @Test
+  public void putInterestTestRepeatedEmail() throws Exception {
+    Webb webb = Webb.create();
+    JSONObject payload = new JSONObject();
+    payload.put("email", "testy@test.com");
+    payload.put("interestedIn", "user2@email.com");
+    Request request = webb
+        .put("http://localhost:8002/addinterest")
+        .body(payload);
+    Response<JSONObject> response = request
+            .asJsonObject();
+    JSONObject result = new JSONObject(response.getErrorBody().toString());
+    JSONObject expected = new JSONObject();
+    expected.put("message", "Already interested in user2@email.com");
+    expected.put("status", 400);
+    JSONAssert.assertEquals(expected, result, true);
+    Assert.assertEquals(400, response.getStatusCode());
+  }
+  @Test
+  public void removeInterestTestValidEmail() throws Exception {
+    Webb webb = Webb.create();
+    JSONObject payload = new JSONObject();
+    payload.put("email", "testy@test.com");
+    payload.put("interestedIn", "user3@email.com");
+    Request request = webb
+            .put("http://localhost:8002/removeinterest")
+            .body(payload);
+    Response<JSONObject> response = request
+            .asJsonObject();
+    JSONObject result = response.getBody();
+    JSONObject expected = new JSONObject();
+    expected.put("message", "Removed interest in user3@email.com");
+    expected.put("status", 200);
+    JSONAssert.assertEquals(expected, result, true);
+    Assert.assertEquals(200, response.getStatusCode());
+    JSONObject expected2 = webb
+        .get("http://localhost:8002/interested?email=testy@test.com")
+        .asJsonObject().getBody();
+    JSONArray matches = new JSONArray();
+    matches.put("user1@email.com");
+    matches.put("user2@email.com");
+    JSONAssert.assertEquals(expected2.getJSONArray("interests"), matches, true);
+  }
+  @Test
+  public void removeInterestTestInvalidEmail() throws Exception {
+    Webb webb = Webb.create();
+    JSONObject payload = new JSONObject();
+    payload.put("email", "testy@test.com");
+    payload.put("interestedIn", "user4@email.com");
+    Request request = webb
+            .put("http://localhost:8002/removeinterest")
+            .body(payload);
+    Response<JSONObject> response = request
+            .asJsonObject();
+    JSONObject result = new JSONObject(response.getErrorBody().toString());
+    JSONObject expected = new JSONObject();
+    expected.put("message", "No interest in user4@email.com on record");
+    expected.put("status", 400);
+    JSONAssert.assertEquals(expected, result, true);
+    Assert.assertEquals(400, response.getStatusCode());
   }
 }
