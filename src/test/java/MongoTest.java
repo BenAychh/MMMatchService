@@ -74,8 +74,6 @@ public class MongoTest {
     suggestedMatches.put(match1);
     suggestedMatches.put(match2);
     expected.put("match suggestions", suggestedMatches);
-    System.out.println("Result:   " + result);
-    System.out.println("Expected: " + expected);
     JSONAssert.assertEquals(expected, result, JSONCompareMode.STRICT);
   }
   
