@@ -2,15 +2,10 @@
 import com.goebl.david.Request;
 import com.goebl.david.Response;
 import com.goebl.david.Webb;
-import com.mongodb.MongoClient;
-import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
-import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.Assert;
@@ -101,6 +96,7 @@ public class PostgresTest {
     JSONAssert.assertEquals(expected, result, true);
     Assert.assertEquals(200, response.getStatusCode());
   }
+  
   @Test
   public void getInterestedInTest() throws Exception {
     Webb webb = Webb.create();
@@ -120,6 +116,7 @@ public class PostgresTest {
     JSONAssert.assertEquals(expected, result, true);
     Assert.assertEquals(200, response.getStatusCode());
   }
+
   @Test
   public void putInterestTestValidEmail() throws Exception {
     Webb webb = Webb.create();

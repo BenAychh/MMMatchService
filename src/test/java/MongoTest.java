@@ -61,19 +61,21 @@ public class MongoTest {
     Response<JSONObject> response = request
             .asJsonObject();
     JSONObject result = response.getBody();
-    System.out.println(result);
     JSONObject expected = new JSONObject();
     expected.put("message", "User found");
     expected.put("status", 200);
     JSONArray suggestedMatches = new JSONArray();
-    suggestedMatches.put(new JSONObject()
-        .append("email", "match1@match.com")
-        .append("perc", 90));
-    suggestedMatches.put(new JSONObject()
-        .append("email", "match2@match.com")
-        .append("perc", 97));
+    JSONObject match1 = new JSONObject();
+    match1.put("email", "match1@match.com");
+    match1.put("perc", 90);
+    JSONObject match2 = new JSONObject();
+    match2.put("email", "match2@match.com");
+    match2.put("perc", 97);
+    suggestedMatches.put(match1);
+    suggestedMatches.put(match2);
     expected.put("match suggestions", suggestedMatches);
-    System.out.println(expected);
+    System.out.println("Result:   " + result);
+    System.out.println("Expected: " + expected);
     JSONAssert.assertEquals(expected, result, JSONCompareMode.STRICT);
   }
   
