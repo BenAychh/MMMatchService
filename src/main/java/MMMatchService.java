@@ -29,7 +29,7 @@ public class MMMatchService {
     mongoLogger.setLevel(Level.SEVERE); // e.g. or Log.WARNING, etc.
     port(8002);
     MongoRoutes mongoRoutes = new MongoRoutes();
-    post("/upsert", mongoRoutes.createOrUpdate);
+    put("/upsert", mongoRoutes.createOrUpdate);
     get("/suggestions", mongoRoutes.getPotentialMatches);
     put("/deactivate", mongoRoutes.deactivate);
     put("/activate", mongoRoutes.activate);

@@ -4,12 +4,10 @@
  * and open the template in the editor.
  */
 
-import com.goebl.david.Webb;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import org.bson.Document;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
@@ -51,24 +49,22 @@ public class MongoRoutes {
       MongoDatabase md = mc.getDatabase(DATABASE_NAME);
       MongoCollection<Document> potentialMatches
           = md.getCollection(TABLE_NAME);
-      // Check if it already exists
       JSONObject returner = new JSONObject();
       Document matcher = new Document("email", data.getString("email"));
       if (potentialMatches.find(matcher).first() == null) {
         potentialMatches.insertOne(convertJSONtoDocument(data));
         if (notifyDaemon(data.getString("email"), true)) {
-          returnReady(201, data.getString("email") + " added, starting "
-              + "match calculations", returner, response);
+          returnReady(201, "Match profile created for "
+              + data.getString("email"), returner, response);
         } else {
           returnReady(500, "Internal Daemon Error", returner, response);
         }
       } else {
-        System.out.println(convertJSONtoDocument(data));
         potentialMatches.updateOne(matcher,
             new Document("$set", convertJSONtoDocument(data)));
         if (notifyDaemon(data.getString("email"), true)) {
-          returnReady(200, data.getString("email") + " updated, starting "
-              + "match calculations", returner, response);
+          returnReady(200, "Match profile updated for "
+              + data.getString("email"), returner, response);
         } else {
           returnReady(500, "Internal Daemon Error", returner, response);
         }
