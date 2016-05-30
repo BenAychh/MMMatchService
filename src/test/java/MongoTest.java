@@ -83,14 +83,13 @@ public class MongoTest {
     JSONObject payload = new JSONObject();
     payload.put("email", "inserttest@gmail.com");
     Request request = webb
-            .post("http://localhost:8002/upsert")
+            .put("http://localhost:8002/upsert")
             .body(payload);
     Response<JSONObject> response = request
             .asJsonObject();
     JSONObject result = response.getBody();
     JSONObject expected = new JSONObject();
-    expected.put("message", "inserttest@gmail.com added, starting match "
-        + "calculations");
+    expected.put("message", "Match profile created for inserttest@gmail.com");
     expected.put("status", 201);
     JSONAssert.assertEquals(expected, result, true);
     Assert.assertEquals(201, response.getStatusCode());
@@ -111,14 +110,13 @@ public class MongoTest {
     payload.put("email", "testy@test.com");
     payload.put("this", "is an insert test");
     Request request = webb
-            .post("http://localhost:8002/upsert")
+            .put("http://localhost:8002/upsert")
             .body(payload);
     Response<JSONObject> response = request
             .asJsonObject();
     JSONObject result = response.getBody();
     JSONObject expected = new JSONObject();
-    expected.put("message", "testy@test.com updated, starting match "
-        + "calculations");
+    expected.put("message", "Match profile updated for testy@test.com");
     expected.put("status", 200);
     JSONAssert.assertEquals(expected, result, true);
     Assert.assertEquals(200, response.getStatusCode());
