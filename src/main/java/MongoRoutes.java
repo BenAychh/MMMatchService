@@ -173,10 +173,10 @@ public class MongoRoutes {
   {
     String daemon = System.getenv("daemonIP");
     if (daemon == null) {
-      daemon = "localhost";
+      daemon = "localhost:8000";
     }
     Webb webb = Webb.create();
-    com.goebl.david.Request request = webb.post(daemon + "/notify")
+    com.goebl.david.Request request = webb.post("http://" + daemon + "/notify")
         .param("email", email)
         .param("update", updated);
     com.goebl.david.Response<Void> response = request.asVoid();
