@@ -167,7 +167,7 @@ public class PostgresTest {
     Webb webb = Webb.create();
     JSONObject payload = new JSONObject();
     payload.put("email", "testy@test.com");
-    payload.put("interestedIn", "user3@email.com");
+    payload.put("uninterestedIn", "user3@email.com");
     Request request = webb
             .put("http://localhost:8002/removeinterest")
             .body(payload);
@@ -175,7 +175,7 @@ public class PostgresTest {
             .asJsonObject();
     JSONObject result = response.getBody();
     JSONObject expected = new JSONObject();
-    expected.put("message", "Removed interest in user3@email.com");
+    expected.put("message", "You have removed your interest in user3@email.com");
     expected.put("status", 200);
     JSONAssert.assertEquals(expected, result, true);
     Assert.assertEquals(200, response.getStatusCode());
@@ -192,7 +192,7 @@ public class PostgresTest {
     Webb webb = Webb.create();
     JSONObject payload = new JSONObject();
     payload.put("email", "testy@test.com");
-    payload.put("interestedIn", "user4@email.com");
+    payload.put("uninterestedIn", "user4@email.com");
     Request request = webb
             .put("http://localhost:8002/removeinterest")
             .body(payload);
