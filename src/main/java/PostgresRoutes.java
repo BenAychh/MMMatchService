@@ -99,8 +99,18 @@ public class PostgresRoutes {
         ps.setString(1, params.getString("email"));
         ps.setString(2, params.getString("interestedIn"));
         ps.execute();
-        returnReady(200, "Added interest in "
-            + params.getString("interestedIn"), returner, response);
+        query = "select * from interested where email= ? AND interested_in = ?";
+        ps = connection.prepareStatement(query);
+        ps.setString(1, params.getString("interestedIn"));
+        ps.setString(2, params.getString("email"));
+        rs = ps.executeQuery();
+        if (rs.next()) {
+          returnReady(200, params.getString("interestedIn")
+              +" is interested in you, you are a match!", returner, response);
+        } else {
+          returnReady(200, "You have shown interest in "
+              + params.getString("interestedIn"), returner, response);
+        }
       } else {
         returnReady(400, "Already interested in "
             + params.getString("interestedIn"), returner, response);
@@ -120,20 +130,59 @@ public class PostgresRoutes {
       String query = "select id from interested where email=? AND "
           + "interested_in=?";
       PreparedStatement ps = connection.prepareStatement(query);
-      ps.setString(1, params.getString("email"));
-      ps.setString(2, params.getString("interestedIn"));
+      ps.setString(1, params.getString("uninterestedIn"));
+      ps.setString(2, params.getString("email"));
       ResultSet rs = ps.executeQuery();
+      boolean match = false;
+      if (rs.next()) {
+        match = true;
+      }
+      query = "select id from interested where email=? AND "
+          + "interested_in=?";
+      ps = connection.prepareStatement(query);
+      ps.setString(1, params.getString("email"));
+      ps.setString(2, params.getString("uninterestedIn"));
+      rs = ps.executeQuery();
       JSONObject returner = new JSONObject();
       if (rs.next()) {
         query = "delete from interested WHERE id=?";
         ps = connection.prepareStatement(query);
         ps.setInt(1, rs.getInt("id"));
         ps.execute();
-        returnReady(200, "Removed interest in "
-            + params.getString("interestedIn"), returner, response);
+        if (!match) {
+          returnReady(200, "You have removed your interest in "
+              + params.getString("uninterestedIn"), returner, response);
+        } else {
+          returnReady(200, "You are no longer a match with "
+              + params.getString("uninterestedIn"), returner, response);
+        }
       } else {
-        returnReady(400, "No interest in " + params.getString("interestedIn")
+        returnReady(400, "No interest in " + params.getString("uninterestedIn")
             + " on record", returner, response);
+      }
+      rs.close();
+      ps.close();
+      connection.close();
+      return returner;
+    }
+  };
+  public final Route isMatch = new Route() {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      Connection connection = cpds.getConnection();
+      String query = "select interested_in from interested where email=? " +
+          "AND interested_in = ? AND interested_in IN" +
+          "(select email from interested WHERE interested_in = ?)";
+      PreparedStatement ps = connection.prepareStatement(query);
+      ps.setString(1, request.queryParams("email"));
+      ps.setString(2, request.queryParams("match"));
+      ps.setString(3, request.queryParams("email"));
+      ResultSet rs = ps.executeQuery();
+      JSONObject returner = new JSONObject();
+      if (rs.next()) {
+        returner.put("match", true);
+      } else {
+        returner.put("match", false);
       }
       rs.close();
       ps.close();

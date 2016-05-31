@@ -30,6 +30,7 @@ public class MMMatchService {
     port(8002);
     MongoRoutes mongoRoutes = new MongoRoutes();
     put("/upsert", mongoRoutes.createOrUpdate);
+    get("/matchprofile", mongoRoutes.getMatchProfile);
     get("/suggestions", mongoRoutes.getPotentialMatches);
     put("/deactivate", mongoRoutes.deactivate);
     put("/activate", mongoRoutes.activate);
@@ -37,6 +38,7 @@ public class MMMatchService {
     PostgresRoutes postgresRoutes = new PostgresRoutes();
     get("/matches", postgresRoutes.getMatches);
     get("/interested", postgresRoutes.getInterested);
+    get("/ismatch", postgresRoutes.isMatch);
     put("/addinterest", postgresRoutes.putInterest);
     put("/removeinterest", postgresRoutes.removeInterest);
     get("*", error);

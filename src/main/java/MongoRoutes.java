@@ -73,6 +73,26 @@ public class MongoRoutes {
       return returner;
     }
   };
+  public final Route getMatchProfile = new Route() {
+    @Override
+    public Object handle(Request request, Response response) throws Exception {
+      MongoClient mc = getMongoClient();
+      MongoDatabase md = mc.getDatabase(DATABASE_NAME);
+      MongoCollection<Document> potentialMatches
+          = md.getCollection(TABLE_NAME);
+      JSONObject returner = new JSONObject();
+      Document matcher = new Document("email", request.queryParams("email"));
+      Document profile = potentialMatches.find(matcher).first();
+      if (profile != null) {
+        returnReady(200, "Match Profile",  returner, response);
+        returner.put("profile", profile.toJson());
+      } else {
+        returnReady(400, "Email not found", returner, response);
+      }
+      mc.close();
+      return returner;
+    }
+  };
   public final Route deactivate = new Route() {
     @Override
     public Object handle(Request request, Response response) throws Exception {
