@@ -4,6 +4,7 @@
  * and open the template in the editor.
  */
 
+import com.goebl.david.Webb;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
@@ -170,16 +171,15 @@ public class MongoRoutes {
   
   private boolean notifyDaemon(final String email, final boolean updated)
   {
-//    String daemon = System.getenv("daemonIP");
-//    if (daemon == null) {
-//      daemon = "localhost";
-//    }
-//    Webb webb = Webb.create();
-//    com.goebl.david.Request request = webb.post(daemon + "/notify")
-//        .param("email", email)
-//        .param("update", updated);
-//    com.goebl.david.Response<Void> response = request.asVoid();
-//    return response.getStatusCode() == 200;
-    return true;
+    String daemon = System.getenv("daemonIP");
+    if (daemon == null) {
+      daemon = "localhost";
+    }
+    Webb webb = Webb.create();
+    com.goebl.david.Request request = webb.post(daemon + "/notify")
+        .param("email", email)
+        .param("update", updated);
+    com.goebl.david.Response<Void> response = request.asVoid();
+    return response.getStatusCode() == 200;
   }
 }
