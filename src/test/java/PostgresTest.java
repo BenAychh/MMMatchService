@@ -130,7 +130,7 @@ public class PostgresTest {
             .asJsonObject();
     JSONObject result = response.getBody();
     JSONObject expected = new JSONObject();
-    expected.put("message", "Added interest in user4@email.com");
+    expected.put("message", "You have shown interest in user4@email.com");
     expected.put("status", 200);
     JSONAssert.assertEquals(expected, result, true);
     Assert.assertEquals(200, response.getStatusCode());
