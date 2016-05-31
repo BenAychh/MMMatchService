@@ -173,7 +173,7 @@ public class MongoRoutes {
   {
     String daemon = System.getenv("daemonIP");
     if (daemon == null) {
-      daemon = "localhost:8000";
+      daemon = "localhost:8003";
     }
     Webb webb = Webb.create();
     com.goebl.david.Request request = webb.post("http://" + daemon + "/notify")
