@@ -8,6 +8,7 @@ import com.goebl.david.Webb;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.util.JSON;
 import org.bson.Document;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -54,8 +55,8 @@ public class MongoRoutes {
       JSONObject returner = new JSONObject();
       Document matcher = new Document("email", data.getString("email"));
       if (potentialMatches.find(matcher).first() == null) {
+        data.put("matchSuggestions", new JSONArray());
         Document temp = convertJSONtoDocument(data);
-        temp.put("matchSuggestions", new JSONArray());
         potentialMatches.insertOne(temp);
         if (notifyDaemon(data.getString("email"), true)) {
           returnReady(201, "Match profile created for "
