@@ -32,7 +32,7 @@ public class PostgresRoutes {
     }
     cpds = new ComboPooledDataSource();
     cpds.setJdbcUrl("jdbc:postgresql://"
-        + host + ":" + port + "/Interested?user=postgres");
+        + host + ":" + port + "/Interested?user=ec2-user");
   }
   public final Route getMatches = new Route() {
     @Override
