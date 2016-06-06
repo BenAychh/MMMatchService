@@ -224,7 +224,7 @@ public class PostgresRoutes {
         ResultSet rs = ps.executeQuery();
         rs.next();
         returner.put("match", rs.getBoolean("match"));
-        returner.put("intersted", rs.getBoolean("interested"));
+        returner.put("interested", rs.getBoolean("interested"));
         rs.close();
         ps.close();
         connection.close();
