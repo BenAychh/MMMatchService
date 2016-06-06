@@ -195,24 +195,65 @@ public class PostgresRoutes {
       return returner;
     }
   };
-  public final Route isMatch = new Route() {
+  public final Route getRelationship = new Route() {
+    @Override
+    public Object handle(Request request, Response response) {
+      JSONObject returner = new JSONObject();
+      try {
+        Connection connection = cpds.getConnection();
+        String query =
+            "select CASE WHEN EXISTS (\n" +
+                "select interested_in from interested where email=?\n" +
+                "AND interested_in = ?)\n" +
+                "THEN TRUE\n" +
+                "ELSE FALSE \n" +
+              "END AS interested,\n" +
+              "CASE WHEN EXISTS (\n" +
+                "select interested_in from interested where email=?\n" +
+                "AND interested_in = ? AND interested_in IN\n" +
+                "(select email from interested WHERE interested_in = ?))\n" +
+                "THEN TRUE\n" +
+                "ELSE FALSE \n" +
+              "END AS match";
+        PreparedStatement ps = connection.prepareStatement(query);
+        ps.setString(1, request.queryParams("email"));
+        ps.setString(2, request.queryParams("match"));
+        ps.setString(3, request.queryParams("email"));
+        ps.setString(4, request.queryParams("match"));
+        ps.setString(5, request.queryParams("email"));
+        ResultSet rs = ps.executeQuery();
+        rs.next();
+        returner.put("match", rs.getBoolean("match"));
+        returner.put("intersted", rs.getBoolean("interested"));
+        rs.close();
+        ps.close();
+        connection.close();
+      } catch (SQLException e) {
+        response.status(500);
+        JSONObject catchObj = new JSONObject();
+        catchObj.put("error", e);
+        return catchObj;
+      }
+      return returner;
+    }
+  };
+  
+  public final Route isInterest = new Route() {
     @Override
     public Object handle(Request request, Response response) {
       JSONObject returner = new JSONObject();
       try {
         Connection connection = cpds.getConnection();
         String query = "select interested_in from interested where email=? " +
-            "AND interested_in = ? AND interested_in IN" +
-            "(select email from interested WHERE interested_in = ?)";
+            "AND interested_in = ?";
         PreparedStatement ps = connection.prepareStatement(query);
         ps.setString(1, request.queryParams("email"));
         ps.setString(2, request.queryParams("match"));
-        ps.setString(3, request.queryParams("email"));
         ResultSet rs = ps.executeQuery();
         if (rs.next()) {
-          returner.put("match", true);
+          returner.put("interested", true);
         } else {
-          returner.put("match", false);
+          returner.put("interested", false);
         }
         rs.close();
         ps.close();

@@ -38,7 +38,8 @@ public class MMMatchService {
     PostgresRoutes postgresRoutes = new PostgresRoutes();
     get("/matches", postgresRoutes.getMatches);
     get("/interested", postgresRoutes.getInterested);
-    get("/ismatch", postgresRoutes.isMatch);
+    get("/relationship", postgresRoutes.getRelationship);
+    get("/isinterest", postgresRoutes.isInterest);
     put("/addinterest", postgresRoutes.putInterest);
     put("/removeinterest", postgresRoutes.removeInterest);
     get("*", error);
