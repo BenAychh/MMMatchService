@@ -8,7 +8,9 @@ import com.goebl.david.Webb;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.util.JSON;
 import org.bson.Document;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import spark.Request;
 import spark.Response;
@@ -53,7 +55,9 @@ public class MongoRoutes {
       JSONObject returner = new JSONObject();
       Document matcher = new Document("email", data.getString("email"));
       if (potentialMatches.find(matcher).first() == null) {
-        potentialMatches.insertOne(convertJSONtoDocument(data));
+        data.put("matchSuggestions", new JSONArray());
+        Document temp = convertJSONtoDocument(data);
+        potentialMatches.insertOne(temp);
         if (notifyDaemon(data.getString("email"), true)) {
           returnReady(201, "Match profile created for "
               + data.getString("email"), returner, response);

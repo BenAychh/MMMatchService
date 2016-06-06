@@ -102,7 +102,7 @@ public class MongoTest {
       Assert.fail("Profile not added");
     }
   }
-  
+
   @Test
   public void testUpdate() throws Exception {
     Webb webb = Webb.create();
@@ -153,7 +153,7 @@ public class MongoTest {
     Document results = potentialMatches.find(matcher).first();
     Assert.assertEquals(false, results.getBoolean("active"));
   }
-  
+
   @Test
   public void testActivate() throws Exception {
     Webb webb = Webb.create();
