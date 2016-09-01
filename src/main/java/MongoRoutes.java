@@ -167,7 +167,7 @@ public class MongoRoutes {
   
   private boolean notifyDaemon(final String email, final boolean updated)
   {
-    String daemon = System.getenv("daemonIP");
+    String daemon = System.getenv("DAEMON_IP");
     if (daemon == null) {
       daemon = "localhost:8003";
     }
