@@ -22,17 +22,9 @@ public class PostgresRoutes {
   private ComboPooledDataSource cpds;
 
   public PostgresRoutes() {
-    String host = System.getenv("PG_PORT_5432_TCP_ADDR");
-    String port = System.getenv("PG_PORT_5432_TCP_PORT");
-    if (host == null) {
-      host = "localhost";
-    }
-    if (port == null) {
-      port = "5432";
-    }
+    String databaseUrl = System.getenv("DATABASE_URL");
     cpds = new ComboPooledDataSource();
-    cpds.setJdbcUrl("jdbc:postgresql://"
-        + host + ":" + port + "/Interested?user=ec2-user");
+    cpds.setJdbcUrl(databaseUrl);
   }
   public final Route getMatches = new Route() {
     @Override
