@@ -146,16 +146,8 @@ public class MongoRoutes {
   };
 
   private final MongoClient getMongoClient() {
-    final String DEFAULT_MONGO_PORT = "27017";
-    String host = System.getenv("MD_PORT_27017_TCP_ADDR");
-    if (host == null) {
-      host = "localhost";
-    }
-    String port = System.getenv("MD_PORT_27017_TCP_PORT");
-    if (port == null) {
-      port = DEFAULT_MONGO_PORT;
-    }
-    return new MongoClient(host, Integer.parseInt(port));
+    String mongoUri = System.getenv("MONGODB_URI");
+    return new MongoClient(mongoUri);
   }
   
   private Document convertJSONtoDocument(final JSONObject obj) {
